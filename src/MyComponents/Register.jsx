@@ -1,9 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import registerimg from "../assets/register.jpg";
 import remlogo from "../assets/rickemortylogo.png";
+import Swal from "sweetalert2";
 
-export const Register = () => {
-  const [isRegistered, setIsRegistered] = useState(false);
+export const Register = ({isRegistered, setIsRegistered, isLogged}) => {
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
@@ -11,6 +12,8 @@ export const Register = () => {
     password: "",
     marketing_accept: false,
   });
+  const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -24,6 +27,9 @@ export const Register = () => {
     e.preventDefault();
 
     if (isRegistered) {
+
+      const { email, password } = formData;
+
       try {
         const response = await fetch("http://localhost:3000/login", {
           method: "POST",
@@ -37,10 +43,18 @@ export const Register = () => {
           const data = await response.json();
           console.log(data);
 
-          if (data.userId) {
-            localStorage.setItem("userId", data.userId);
-            setErrorMessage("");
-            navigate("/dashboard");
+          if (data.token) {
+            localStorage.setItem("token", data.token);
+            Swal.fire({
+              title: 'Accesso',
+              text: 'Hai effettuato il login con successo!',
+              icon: 'success',
+              confirmButtonText: 'OK',
+            }).then((result) => {
+              if (result.isConfirmed) {
+                navigate('/dashboard')
+              }
+            })
           } else {
             setErrorMessage("ID utente non trovato");
           }
@@ -53,6 +67,10 @@ export const Register = () => {
       }
     } else {
       try {
+
+      const { email, password, first_name, last_name, marketing_accept } = formData;
+
+
         const response = await fetch("http://localhost:3000/users", {
           method: "POST",
           headers: {
@@ -83,8 +101,8 @@ export const Register = () => {
   };
 
   return (
-    <section className="bg-white">
-      <div className="lg:grid lg:min-h-screen lg:w-screen lg:grid-cols-12">
+    <section className="bg-white rounded-lg">
+      <div className="lg:grid max-h-[90vh] lg:min-h-[95vh] lg:grid-cols-12 overflow-x-auto no-scrollbar">
         <aside
           className={`z-10 relative block h-full transition-all duration-300 transform ${
             isRegistered ? "lg:translate-x-0" : "lg:translate-x-full"
@@ -93,24 +111,18 @@ export const Register = () => {
           <img
             alt=""
             src={registerimg}
-            className="absolute h-full w-full object-cover object-center inset-0"
+            className="absolute h-full w-full object-cover object-center inset-0 rounded-e-lg"
           />
         </aside>
 
         <main
-          className={`flex items-center justify-center px-8 py-8 sm:px-12 lg:px-16 lg:py-12 lg:col-span-6 transition-all duration-300 transform ${
+          className={`flex items-center justify-center px-6 py-8 sm:px-8 lg:px-6 lg:py-4 lg:col-span-6 transition-all duration-300 transform ${
             isRegistered ? "lg:translate-x-0" : "lg:-translate-x-full"
           }`}
         >
           <div className="max-w-xl lg:max-w-3xl w-full">
-            <div className="w-full flex justify-center items-center lg:justify-start">
-              <a className="w-60" href="#">
-                <span className="sr-only">Home</span>
-                <img src={remlogo} alt="" />
-              </a>
-            </div>
 
-            <h1 className="mt-6 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl">
+            <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl">
               {isRegistered
                 ? "Accedi, cetriolino! 🥒"
                 : "Diventa un cetriolino! 🥒"}
@@ -123,9 +135,10 @@ export const Register = () => {
             </p>
 
             <form
-              action="#"
+              action="submit"
               onSubmit={handleSubmit}
               className="mt-8 grid grid-cols-6 gap-6"
+              method="post"
             >
               {!isRegistered && (
                 <>
@@ -266,7 +279,7 @@ export const Register = () => {
                   {isRegistered ? "Accedi" : "Crea un account"}
                 </button>
 
-                <p className="mt-4 text-sm text-gray-500 sm:mt-0">
+                {!isLogged && (<p className="mt-4 text-sm text-gray-500 sm:mt-0">
                   {isRegistered
                     ? "Non sei registrato? "
                     : "Hai già un account? "}
@@ -288,7 +301,7 @@ export const Register = () => {
                     {isRegistered ? "Registrati" : "Accedi"}
                   </a>
                   .
-                </p>
+                </p>)}
               </div>
             </form>
           </div>

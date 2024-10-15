@@ -1,52 +1,56 @@
 import React, { useEffect, useState } from "react";
+import locationImg from "../assets/locationImg.jpg";
 
 const API_URL = "https://rickandmortyapi.com/api";
 
-export const CharacterCards = () => {
-  const [characters, setCharacters] = useState([]);
+export const LocationCards = () => {
+  const [locations, setLocations] = useState([]);
   const [page, setPage] = useState(1);
   const [info, setInfo] = useState({});
 
   useEffect(() => {
-    const fetchCharacters = async () => {
+    const fetchLocations = async () => {
       try {
-        const response = await fetch(`${API_URL}/character?page=${page}`);
+        const response = await fetch(`${API_URL}/location?page=${page}`);
         const data = await response.json();
-        setCharacters(data.results);
+        setLocations(data.results);
         setInfo(data.info);
       } catch (error) {
-        console.error("Errore nel fetching dei personaggi:", error);
+        console.error("Errore nel fetching delle località:", error);
       }
     };
-    fetchCharacters();
+    fetchLocations();
   }, [page]);
 
   return (
     <div className="flex flex-col justify-center items-center mt-10">
-      <div className="character-cards mx-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 w-fit">
-        {characters.map((character) => (
-          <div key={character.id} className="card bg-white card-compact shadow-xl max-w-[400px]">
+      <div className="location-cards grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 w-[90vw]">
+        {locations.map((location) => (
+          <div
+            key={location.id}
+            className="card bg-white card-compact shadow-xl"
+          >
             <img
               className="object-cover rounded-t-xl"
-              src={character.image}
-              alt={character.name}
+              src={locationImg}
+              alt={location.name}
             />
             <div className="card-body">
               <h2 className="card-title font-bold text-[#1aabc0]">
-                {character.name}
-                <div className="badge badge-neutral">{character.species}</div>
+                {location.name}
+                <div className="badge badge-neutral">{location.type}</div>
               </h2>
               <p>
-                {`${character.name} was born ${
-                  character.origin.name === "unknown"
-                    ? "somewhere in the universe"
-                    : `on ${character.origin.name}`
-                }, last time was seen here:`}
-                <br />
-                <span className="font-bold">{`${character.location.name}`}</span>
+                {`${location.name} is a ${
+                  location.type
+                } that actually exist in ${
+                  location.dimension === "unknown"
+                    ? "an unspecified dimension"
+                    : location.dimension
+                }`}
               </p>
               <div className="card-actions justify-end">
-                <button className="btn bg-green-600 text-white">Add +</button>
+                <button className="btn bg-green-600 text-white">Who lives here?</button>
               </div>
             </div>
           </div>

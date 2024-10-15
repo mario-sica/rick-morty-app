@@ -2,6 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
-#root {
-  max-width: 1280px;
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+      display: none;
+  }
+  .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+}
+}
+
+html, body {
+  height: 3000px;
+}
+
+.bg-image {
+  background-image: url('./assets/bgImage.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: right;
 }

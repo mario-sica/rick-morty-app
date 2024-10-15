@@ -1,8 +1,8 @@
 import { useState } from "react";
 import "./App.css";
-import { Register } from "./MyComponents/Register";
-import { CharacterCards } from "./MyComponents/CharacterCards";
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Dashboard } from "./MyComponents/Dashboard";
+import { LandingPage } from "./MyComponents/LandingPage";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -12,8 +12,8 @@ function App() {
       <Router>
         <div className="App">
           <Routes>
-            <Route path="/" element={<Register />}></Route>
-            <Route path="/dashboard" element={<CharacterCards />}></Route>
+            <Route path="/landing-page" element={<LandingPage />}></Route>
+            <Route path="/dashboard" element={<Dashboard />}></Route>
           </Routes>
         </div>
       </Router>
