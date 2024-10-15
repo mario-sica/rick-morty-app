@@ -4,7 +4,7 @@ import registerimg from "../assets/register.jpg";
 import remlogo from "../assets/rickemortylogo.png";
 import Swal from "sweetalert2";
 
-export const Register = ({isRegistered, setIsRegistered, isLogged}) => {
+export const Register = ({ isRegistered, setIsRegistered, isLogged }) => {
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
@@ -12,7 +12,7 @@ export const Register = ({isRegistered, setIsRegistered, isLogged}) => {
     password: "",
     marketing_accept: false,
   });
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -26,8 +26,17 @@ export const Register = ({isRegistered, setIsRegistered, isLogged}) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (isRegistered) {
+    const showError = (message) => {
+      Swal.fire({
+        title: "Error",
+        text: message,
+        icon: "error",
+        confirmButtonText: "Ok",
+        confirmButtonColor: "red",
+      });
+    };
 
+    if (isRegistered) {
       const { email, password } = formData;
 
       try {
@@ -46,37 +55,41 @@ export const Register = ({isRegistered, setIsRegistered, isLogged}) => {
           if (data.token) {
             localStorage.setItem("token", data.token);
             Swal.fire({
-              title: 'Accesso',
-              text: 'Hai effettuato il login con successo!',
-              icon: 'success',
-              confirmButtonText: 'OK',
+              title: "Accesso",
+              text: "Hai effettuato il login con successo!",
+              icon: "success",
+              confirmButtonText: "OK",
             }).then((result) => {
               if (result.isConfirmed) {
-                navigate('/dashboard')
+                navigate("/dashboard");
               }
-            })
+            });
           } else {
-            setErrorMessage("ID utente non trovato");
+            showError("ID utente non trovato");
           }
         } else {
-          setErrorMessage("Email o password non corretti");
+          showError("Email o password non corretti");
         }
       } catch (error) {
         console.error("Errore durante il login:", error);
-        setErrorMessage("Si è verificato un errore durante il login");
+        showError("Si è verificato un errore durante il login");
       }
     } else {
-      try {
-
       const { email, password, first_name, last_name, marketing_accept } = formData;
 
-
+      try {
         const response = await fetch("http://localhost:3000/users", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ email, password, first_name, last_name, marketing_accept }),
+          body: JSON.stringify({
+            email,
+            password,
+            first_name,
+            last_name,
+            marketing_accept,
+          }),
         });
 
         if (response.ok) {
@@ -85,20 +98,20 @@ export const Register = ({isRegistered, setIsRegistered, isLogged}) => {
 
           if (data.userId) {
             localStorage.setItem("userId", data.userId);
-            setErrorMessage("");
             navigate("/dashboard");
           } else {
-            setErrorMessage("ID utente non trovato");
+            showError("ID utente non trovato");
           }
         } else {
-          setErrorMessage("Email o password non corretti");
+          showError("Errore durante la registrazione. Assicurati che l'email non sia già utilizzata.");
         }
       } catch (error) {
-        console.error("Errore durante il login:", error);
-        setErrorMessage("Si è verificato un errore durante la registrazione");
+        console.error("Errore durante la registrazione:", error);
+        showError("Si è verificato un errore durante la registrazione");
       }
     }
   };
+
 
   return (
     <section className="bg-white rounded-lg">
@@ -121,7 +134,6 @@ export const Register = ({isRegistered, setIsRegistered, isLogged}) => {
           }`}
         >
           <div className="max-w-xl lg:max-w-3xl w-full">
-
             <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl">
               {isRegistered
                 ? "Accedi, cetriolino! 🥒"
@@ -279,29 +291,31 @@ export const Register = ({isRegistered, setIsRegistered, isLogged}) => {
                   {isRegistered ? "Accedi" : "Crea un account"}
                 </button>
 
-                {!isLogged && (<p className="mt-4 text-sm text-gray-500 sm:mt-0">
-                  {isRegistered
-                    ? "Non sei registrato? "
-                    : "Hai già un account? "}
-                  <a
-                    href="#"
-                    className="text-gray-700 underline"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setIsRegistered(!isRegistered);
-                      setFormData({
-                        first_name: "",
-                        last_name: "",
-                        email: "",
-                        password: "",
-                        marketing_accept: false,
-                      });
-                    }}
-                  >
-                    {isRegistered ? "Registrati" : "Accedi"}
-                  </a>
-                  .
-                </p>)}
+                {!isLogged && (
+                  <p className="mt-4 text-sm text-gray-500 sm:mt-0">
+                    {isRegistered
+                      ? "Non sei registrato? "
+                      : "Hai già un account? "}
+                    <a
+                      href="#"
+                      className="text-gray-700 underline"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setIsRegistered(!isRegistered);
+                        setFormData({
+                          first_name: "",
+                          last_name: "",
+                          email: "",
+                          password: "",
+                          marketing_accept: false,
+                        });
+                      }}
+                    >
+                      {isRegistered ? "Registrati" : "Accedi"}
+                    </a>
+                    .
+                  </p>
+                )}
               </div>
             </form>
           </div>

@@ -3,6 +3,7 @@ import { Register } from "./Register";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/rickemortylogo.png";
 import Swal from "sweetalert2";
+import { Footer } from "./Footer";
 
 export const LandingPage = () => {
   const [showRegister, setShowRegister] = useState(false);
@@ -89,6 +90,7 @@ export const LandingPage = () => {
           />
         </div>
       </div>
+      <Footer></Footer>
     </div>
   );
 };

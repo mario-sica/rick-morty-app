@@ -12,9 +12,6 @@
 }
 }
 
-html, body {
-  height: 3000px;
-}
 
 .bg-image {
   background-image: url('./assets/bgImage.jpg');

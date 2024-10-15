@@ -5,14 +5,17 @@ import bgImg from "../assets/bgImage.jpg";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { LocationCards } from "./LocationCards";
+import { Footer } from "./Footer";
 
 export const Dashboard = () => {
   const [isLogged, setIsLogged] = useState(false);
   const [type, setType] = useState("character");
-
   const navigate = useNavigate();
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    console.log(token);
+
     Swal.fire({
       title: "Loading...",
       text: "Checking authentication status",
@@ -22,28 +25,41 @@ export const Dashboard = () => {
       },
     });
 
-    const token = localStorage.getItem("token");
-
     if (token) {
       setIsLogged(true);
       Swal.close();
     } else {
+      setIsLogged(false);
       Swal.close();
+    }
+    if (!token) {
       navigate("/landing-page");
     }
   }, [navigate]);
 
   const changeType = () => {
-    if (type === "character") {
-      setType("location");
-    } else {
-      setType("character");
-    }
+    setType((prevType) =>
+      prevType === "character" ? "location" : "character"
+    );
   };
 
-  if (!isLogged) {
-    return null;
-  }
+  const goToMyProfile = () => {
+    navigate("/my-profile");
+  };
+
+  const logout = () => {
+    Swal.fire({
+      icon: "question",
+      title: "Te ne vai già?",
+      text: "Sei sicuro di voler abbandonare proprio ora?",
+      confirmButtonText: "Si, basta giocare",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.removeItem("token");
+        navigate("/landing-page");
+      }
+    });
+  };
 
   return (
     <>
@@ -90,10 +106,18 @@ export const Dashboard = () => {
                 </div>
               </li>
               <li>
-                <a>Your Profile</a>
+                <a onClick={goToMyProfile}>Your Profile</a>
               </li>
               <li>
                 <a>Universe Stats</a>
+              </li>
+              <li>
+                <button
+                  onClick={logout}
+                  className="btn btn-error mt-2 text-white"
+                >
+                  Logout
+                </button>
               </li>
             </ul>
           </div>
@@ -121,6 +145,7 @@ export const Dashboard = () => {
         <h1>Available Cards</h1>
       </div>
       {type === "character" ? <CharacterCards /> : <LocationCards />}
+      <Footer></Footer>
     </>
   );
 };

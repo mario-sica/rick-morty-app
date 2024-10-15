@@ -34,7 +34,7 @@ export const CharacterCards = () => {
             <div className="card-body">
               <h2 className="card-title font-bold text-[#1aabc0]">
                 {character.name}
-                <div className="badge badge-neutral">{character.species}</div>
+                <div className="badge badge-neutral h-fit">{character.species}</div>
               </h2>
               <p>
                 {`${character.name} was born ${
@@ -53,7 +53,7 @@ export const CharacterCards = () => {
         ))}
       </div>
 
-      <div className="pagination fixed bottom-0 bg-white shadow-lg p-2 mb-4 rounded-full">
+      <div className="pagination sticky bottom-6 mt-5 bg-white shadow-lg p-2 rounded-full">
         <button
           className="py-2 m-2 bg-green-600 text-white btn rounded-full"
           onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
