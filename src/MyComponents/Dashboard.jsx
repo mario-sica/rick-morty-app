@@ -47,6 +47,10 @@ export const Dashboard = () => {
     navigate("/my-profile");
   };
 
+  const goToUniverseStats = () => {
+    navigate('/universe-stats');
+  }
+
   const logout = () => {
     Swal.fire({
       icon: "question",
@@ -109,7 +113,7 @@ export const Dashboard = () => {
                 <a onClick={goToMyProfile}>Your Profile</a>
               </li>
               <li>
-                <a>Universe Stats</a>
+                <a onClick={goToUniverseStats}>Universe Stats</a>
               </li>
               <li>
                 <button

@@ -6,6 +6,10 @@ export const CharacterCards = () => {
   const [characters, setCharacters] = useState([]);
   const [page, setPage] = useState(1);
   const [info, setInfo] = useState({});
+  // const [collection, setCollection] = useState(() => {
+  //   const savedCollection = localStorage.getItem("collection");
+  //   return savedCollection ? JSON.parse(savedCollection) : [];
+  // });
 
   useEffect(() => {
     const fetchCharacters = async () => {
@@ -20,6 +24,14 @@ export const CharacterCards = () => {
     };
     fetchCharacters();
   }, [page]);
+
+  // const addToCollection = (character) => {
+  //   setCollection((prevCollection) => {
+  //     const updatedCollection = [...prevCollection, character];
+  //     localStorage.setItem("collection", JSON.stringify(updatedCollection));
+  //     return updatedCollection;
+  //   });
+  // };
 
   return (
     <div className="flex flex-col justify-center items-center mt-10">

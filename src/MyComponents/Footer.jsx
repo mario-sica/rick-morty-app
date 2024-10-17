@@ -2,7 +2,7 @@ import logo from "../assets/rickemortylogo.png";
 
 export const Footer = () => {
   return (
-    <footer className="footer footer-center bg-gray-500 text-primary-content p-10 mt-8">
+    <footer className="footer footer-center bottom-0 relative bg-gray-500 text-primary-content p-10 mt-8">
       <aside>
         <div className="w-full flex justify-center items-center">
           <img className="h-16" src={logo} alt="" />

@@ -18,6 +18,31 @@ export const MyProfile = () => {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    console.log(token);
+
+    Swal.fire({
+      title: "Loading...",
+      text: "Checking authentication status",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
+    if (token) {
+      setIsLogged(true);
+      Swal.close();
+    } else {
+      setIsLogged(false);
+      Swal.close();
+    }
+    if (!token) {
+      navigate("/landing-page");
+    }
+  }, [navigate]);
+
   const logout = () => {
     Swal.fire({
       icon: "question",
@@ -134,7 +159,9 @@ export const MyProfile = () => {
                 <a onClick={() => navigate("/dashboard")}>Dashboard</a>
               </li>
               <li>
-                <a>Universe Stats</a>
+                <a onClick={() => navigate("/universe-stats")}>
+                  Universe Stats
+                </a>
               </li>
             </ul>
           </div>
