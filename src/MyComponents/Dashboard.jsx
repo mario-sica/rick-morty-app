@@ -60,6 +60,7 @@ export const Dashboard = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         localStorage.removeItem("token");
+        localStorage.removeItem("user");
         navigate("/landing-page");
       }
     });
@@ -115,6 +116,7 @@ export const Dashboard = () => {
               <li>
                 <a onClick={goToUniverseStats}>Universe Stats</a>
               </li>
+              <li><a onClick={() => navigate('/users')}>Admin - Console</a></li>
               <li>
                 <button
                   onClick={logout}

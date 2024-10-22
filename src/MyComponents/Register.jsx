@@ -54,16 +54,31 @@ export const Register = ({ isRegistered, setIsRegistered, isLogged }) => {
 
           if (data.token) {
             localStorage.setItem("token", data.token);
-            Swal.fire({
-              title: "Accesso",
-              text: "Hai effettuato il login con successo!",
-              icon: "success",
-              confirmButtonText: "OK",
-            }).then((result) => {
-              if (result.isConfirmed) {
-                navigate("/dashboard");
-              }
-            });
+            localStorage.setItem("user", JSON.stringify(data.user));
+
+            if (data.user.role_id === 2) {
+              Swal.fire({
+                title: "Bentornato, sire",
+                text: "E' arrivato il boss, mettete tutto in ordine!",
+                icon: "warning",
+                confirmButtonText: "Fate spazio al re.",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  navigate("/dashboard");
+                }
+              });
+            } else {
+              Swal.fire({
+                title: "Accesso",
+                text: "Hai effettuato il login con successo!",
+                icon: "success",
+                confirmButtonText: "OK",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  navigate("/dashboard");
+                }
+              });
+            }
           } else {
             showError("ID utente non trovato");
           }
@@ -75,10 +90,11 @@ export const Register = ({ isRegistered, setIsRegistered, isLogged }) => {
         showError("Si è verificato un errore durante il login");
       }
     } else {
-      const { email, password, first_name, last_name, marketing_accept } = formData;
+      const { email, password, first_name, last_name, marketing_accept } =
+        formData;
 
       try {
-        const response = await fetch("http://localhost:3000/users", {
+        const response = await fetch("http://localhost:3000/register", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -95,15 +111,27 @@ export const Register = ({ isRegistered, setIsRegistered, isLogged }) => {
         if (response.ok) {
           const data = await response.json();
           console.log(data);
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("user", JSON.stringify(data.user));
 
-          if (data.userId) {
-            localStorage.setItem("userId", data.userId);
-            navigate("/dashboard");
-          } else {
-            showError("ID utente non trovato");
-          }
+          Swal.fire({
+            title: "Accesso",
+            text: "Hai effettuato la registrazione con successo!",
+            icon: "success",
+            confirmButtonText: "Letsgoski",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              navigate("/dashboard");
+            }
+          });
         } else {
-          showError("Errore durante la registrazione. Assicurati che l'email non sia già utilizzata.");
+          const errorData = await response.json();
+          const errorMessage =
+            errorData.error ||
+            "Errore durante la registrazione. Assicurati che l'email non sia già utilizzata.";
+
+          showError(errorMessage);
+          console.log(errorData);
         }
       } catch (error) {
         console.error("Errore durante la registrazione:", error);
@@ -111,7 +139,6 @@ export const Register = ({ isRegistered, setIsRegistered, isLogged }) => {
       }
     }
   };
-
 
   return (
     <section className="bg-white rounded-lg">

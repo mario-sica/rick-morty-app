@@ -10,6 +10,27 @@ export const CharacterCards = () => {
   //   const savedCollection = localStorage.getItem("collection");
   //   return savedCollection ? JSON.parse(savedCollection) : [];
   // });
+  const [userRole, setUserRole] = useState(null); // Stato per il ruolo dell'utente
+
+  useEffect(() => {
+    // Funzione per recuperare il ruolo dell'utente dal localStorage
+    const fetchUserRole = () => {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (user && user.role_id) {
+        setUserRole(user.role_id);
+      }
+    };
+
+    fetchUserRole();
+  }, []);
+
+  const updateCharacterName = (id, newName) => {
+    setCharacters((prevCharacters) =>
+      prevCharacters.map((character) =>
+        character.id === id ? { ...character, name: newName } : character
+      )
+    );
+  };
 
   useEffect(() => {
     const fetchCharacters = async () => {
@@ -37,7 +58,10 @@ export const CharacterCards = () => {
     <div className="flex flex-col justify-center items-center mt-10">
       <div className="character-cards mx-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 w-fit">
         {characters.map((character) => (
-          <div key={character.id} className="card bg-white card-compact shadow-xl max-w-[400px]">
+          <div
+            key={character.id}
+            className="card bg-white card-compact shadow-xl max-w-[400px]"
+          >
             <img
               className="object-cover rounded-t-xl"
               src={character.image}
@@ -45,8 +69,21 @@ export const CharacterCards = () => {
             />
             <div className="card-body">
               <h2 className="card-title font-bold text-[#1aabc0]">
-                {character.name}
-                <div className="badge badge-neutral h-fit">{character.species}</div>
+                {userRole === 2 ? (
+                  <input
+                    type="text"
+                    defaultValue={character.name}
+                    onBlur={(e) =>
+                      updateCharacterName(character.id, e.target.value)
+                    }
+                    className="input input-bordered"
+                  />
+                ) : (
+                  character.name
+                )}
+                <div className="badge badge-neutral h-fit">
+                  {character.species}
+                </div>
               </h2>
               <p>
                 {`${character.name} was born ${
